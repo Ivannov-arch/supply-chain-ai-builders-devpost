@@ -21,19 +21,34 @@
 6. Create `backend/schemas/request.py` — define Pydantic models for input/output
 7. Create `backend/services/model_service.py` — load `model_delay.json` and `model_risk.json` on startup
 8. Create `backend/routers/predict.py` — implement `POST /predict`:
-   - Accept: `origin`, `destination`, `cargo_type`, `shipment_date`, `transport_mode`
-   - Run XGBoost inference → `delay_days` + `risk_level`
+   - Accept fields sesuai Cross-Border dataset:
+     ```json
+     {
+       "origin_country": "Indonesia",
+       "destination_country": "Singapore",
+       "transport_mode": "sea",
+       "cargo_type": "electronics",
+       "carrier_id": "C021",
+       "shipment_value": 15000,
+       "compliance_score": 45,
+       "prior_offense_count": 2,
+       "inspection_type": "physical",
+       "is_high_risk_cargo": true,
+       "trade_agreement": "FTA"
+     }
+     ```
+   - Run XGBoost inference → `customs_delay_days` (regresi) + `risk_level` High/Medium/Low (klasifikasi)
    - Return structured JSON:
      ```json
      {
-       "delay_days": 3.8,
+       "customs_delay_days": 3.8,
        "risk_level": "HIGH",
        "confidence": 0.82,
        "shap_breakdown": {},
        "action_plan": null
      }
      ```
-9. Mount router in `main.py`, test with `curl` or Postman
+9. Mount router in `main.py`, test dengan `curl` atau Postman
 
 ---
 
@@ -56,14 +71,16 @@
 ### Hour 11–14: Gemini Integration
 
 14. Create `backend/services/gemini_service.py` — initialize `google-generativeai` client
-15. Build prompt template that takes XGBoost output + SHAP breakdown as structured input:
+15. Build prompt template spesifik ke konteks bea cukai:
     ```
-    You are a logistics risk advisor. Given this data:
+    You are a customs clearance risk advisor for cross-border trade.
+    Given this shipment analysis:
     - Risk Level: HIGH
-    - Predicted Delay: 3.8 days
-    - Top Risk Factors: Port Congestion (45%), Bad Weather (30%)
+    - Predicted Customs Delay: 3.8 days
+    - Top Risk Factors: Low Compliance Score (45%), Physical Inspection Required (30%), High-Risk Cargo (25%)
 
-    Write a concise action plan (3 bullet points max) for the shipper.
+    Write a concise action plan (3 bullet points max) for the exporter.
+    Focus on: customs documentation, timeline buffer, and cargo preparation steps.
     Be specific and practical. Do not restate the numbers.
     ```
 16. Use `gemini-1.5-flash` model (fast, free-tier friendly)

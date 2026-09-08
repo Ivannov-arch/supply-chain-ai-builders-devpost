@@ -50,24 +50,28 @@
 
 > **Status: Not ready yet.** Prepare download links and inspect structure before hackathon.
 
-### Primary Candidates (pick ONE to focus on)
+### Selected Datasets (Opsi A: Cross-Border Delay + Risk + LLM + XAI)
 
-| Dataset | Source | Notes |
-|---------|--------|-------|
-| Supply Chain Data Hub — Delay Prediction | [supplychaindata.io](https://supplychaindata.io) | Most directly relevant |
-| Kaggle: Global Supply Chain Risk 2024–2026 | [kaggle.com](https://kaggle.com) | Has geopolitical + weather features |
-| ISOMORPH Digital Twin | Research paper dataset | Time series inventory + disruption |
-| U.S. Freight Indicators | [data.gov](https://data.gov) | Good for route-level signals |
+| Dataset | Source | Role | Notes |
+|---------|--------|------|-------|
+| **Cross-Border Trade & Customs Delay** | [Kaggle CC0](https://www.kaggle.com/datasets/ziya07/cross-border-trade-and-customs-delay-dataset) | **✅ Primary — Model Utama** | 10k rows, 1.88 MB, target siap pakai, lisensi CC0 |
+| **Freight Indicators Weekly** | [data.gov](https://catalog.data.gov/dataset/freight-indicators-weekly) | **✅ Secondary — Dashboard Context** | Indikator kondisi freight mingguan, gratis, resmi US DOT |
 
 ### Pre-hackathon Dataset Tasks
-- [ ] Download chosen dataset locally to `ml/data/raw/`
-- [ ] Open in a notebook and confirm these columns exist (or equivalents):
-  - Origin / Destination
-  - Shipment date
-  - Actual delivery date → compute `delay_days`
-  - Transport mode (sea / air / land)
-  - At least one disruption/risk signal (weather, port status, etc.)
-- [ ] Target: subset to **10k–50k rows** for fast training
+- [ ] Download Cross-Border dataset locally to `ml/data/raw/cross_border_customs.csv`
+- [ ] Download Freight Indicators CSV to `ml/data/raw/freight_indicators_weekly.csv`
+- [ ] Open in a notebook and confirm these columns exist:
+  - `Origin_Country`, `Destination_Country`
+  - `Transport_Mode` (sea / air / land)
+  - `Cargo_Type`
+  - `Customs_Delay_Days` ← target regresi
+  - `Risk_Flag` ← target klasifikasi (0 = low, 1 = high)
+  - `Compliance_Score`
+  - `Prior_Offense_Count`
+  - `Inspection_Type` (none / x-ray / document / physical)
+  - `Is_High_Risk_Cargo`
+  - `Trade_Agreement` (FTA / non-FTA)
+- [ ] Target: gunakan **semua ~10k rows** (dataset sudah ringkas, tidak perlu subset)
 
 ---
 
