@@ -6,14 +6,14 @@
 ## 1. Accounts & Credentials
 
 ### Required (Must Have)
-- [ ] **GitHub** — Create shared repository, invite both team members as collaborators
-- [ ] **Supabase** — Create project, get `SUPABASE_URL` and `SUPABASE_ANON_KEY`
-- [ ] **Vercel** — Connect GitHub account, ready for frontend deploy
-- [ ] **Render** (or Railway) — Account ready for backend deploy
-- [ ] **Google AI Studio** — Get `GEMINI_API_KEY` (free tier available at [aistudio.google.com](https://aistudio.google.com))
+- [x] **GitHub** — Create shared repository, invite both team members as collaborators
+- [x] **Supabase** — Create project, get `SUPABASE_URL` and `SUPABASE_ANON_KEY`
+- [x] **Vercel** — Connect GitHub account, ready for frontend deploy
+- [x] **Render** (or Railway) — Account ready for backend deploy
+- [x] **Google AI Studio** — Get `GEMINI_API_KEY` (free tier available at [aistudio.google.com](https://aistudio.google.com))
 
 ### Optional / Nice to Have
-- [ ] **Open-Meteo API** — No key required, free and open. Just verify endpoint works:
+- [x] **Open-Meteo API** — No key required, free and open. Just verify endpoint works:
   ```
   GET https://api.open-meteo.com/v1/forecast?latitude=1.35&longitude=103.82&current_weather=true
   ```
@@ -25,14 +25,13 @@
 ### Both Team Members
 
 #### Python (Backend + ML)
-- [ ] Python 3.11+
-- [ ] Create virtualenv: `python -m venv venv`
-- [ ] Install backend dependencies:
+- [x] Python 3.11+
+- [x] Create virtualenv: `python -m venv venv`
+- [x] Install backend dependencies:
   ```bash
-  pip install fastapi uvicorn xgboost shap pandas numpy scikit-learn \
-              httpx python-multipart supabase google-generativeai python-dotenv
+  pip install -r backend/requirements.txt
   ```
-- [ ] Install ML/training dependencies:
+- [x] Install ML/training dependencies:
   ```bash
   pip install jupyter matplotlib seaborn plotly
   ```
