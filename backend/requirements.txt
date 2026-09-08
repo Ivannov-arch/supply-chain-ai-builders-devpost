@@ -1,0 +1,13 @@
+﻿fastapi
+uvicorn
+xgboost
+shap
+pandas
+numpy
+scikit-learn
+httpx
+python-multipart
+supabase
+google-generativeai
+python-dotenv
+openpyxl

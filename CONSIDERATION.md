@@ -1,4 +1,4 @@
-Dokumen ini secara struktur bisnis dan alur dasar sudah **sangat solid (sekitar 80–85% matang)** untuk ukuran proyek *hackathon*. Namun, jika dibawa ke persaingan *hackathon AI* saat ini, ada **5 celah krusial** yang masih kurang dan bisa membuat proyek ini kalah bersaing dengan kompetitor lain.
+Dokumen initial reserach.txt secara struktur bisnis dan alur dasar sudah **sangat solid (sekitar 80–85% matang)** untuk ukuran proyek *hackathon*. Namun, jika dibawa ke persaingan *hackathon AI* saat ini, ada **5 celah krusial** yang masih kurang dan bisa membuat proyek ini kalah bersaing dengan kompetitor lain.
 
 ---
 

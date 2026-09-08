@@ -1,0 +1,2 @@
+﻿# Sample shipment manifest for demo (20-30 rows, mixed risk levels)
+# Columns: origin, destination, cargo_type, shipment_date, transport_mode
