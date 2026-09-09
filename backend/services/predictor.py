@@ -70,8 +70,8 @@ def _encode_input(data: PredictionRequest) -> np.ndarray:
     """Convert a PredictionRequest into a 1-row numpy array ordered by FEATURE_COLUMNS."""
     raw_schema = data.model_dump()  # keys: snake_case (e.g. "country", "weight_kg")
 
-    # Remap to original column names used during training
-    raw: dict = {FIELD_MAP[k]: v for k, v in raw_schema.items()}
+    # Remap to original column names used during training (ignore extra non-feature fields like model_name)
+    raw: dict = {FIELD_MAP[k]: v for k, v in raw_schema.items() if k in FIELD_MAP}
 
     # Label-encode categorical fields (in-place)
     for col in CATEGORICAL_COLS:
@@ -82,10 +82,9 @@ def _encode_input(data: PredictionRequest) -> np.ndarray:
         else:
             raw[col] = -1  # Unseen category → unknown
 
-    # Build ordered array matching training feature order
     row = [raw[col] for col in FEATURE_COLUMNS]
     return np.array([row], dtype=float)
-        
+
 # ── Helper: extract top SHAP features ─────────────────────────────────────────
 def _top_shap_features(X: np.ndarray, n: int = 5) -> list[dict]:
     """Return the top-n SHAP features (by absolute value) for the delay model."""
@@ -117,7 +116,6 @@ def run_prediction(data: PredictionRequest) -> dict:
     risk_flag = int(prob >= OPTIMAL_THRESHOLD)
     risk_label = "High Risk" if risk_flag == 1 else "Low Risk"
     shap_features = _top_shap_features(X)
-
 
     return {
         "delay_days": round(delay_days, 2),

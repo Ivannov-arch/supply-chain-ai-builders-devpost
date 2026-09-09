@@ -10,19 +10,19 @@
 
 1. [x] Initialize Git repo, set main as default branch
 2. [x] Both clone repo and confirm local stack runs (Python venv + Node)
-3. [x] Copy .env.example â†’ .env, fill in all real values (Gemini key, Supabase, etc.)
-4. [x] Confirm pre-trained models are in ackend/models/
-5. [x] Run uvicorn main:app --reload â€” verify /health returns { "status": "ok" }
+3. [x] Copy .env.example → .env, fill in all real values (Gemini key, Supabase, etc.)
+4. [x] Confirm pre-trained models are in  ackend/models/
+5. [x] Run uvicorn main:app --reload — verify /health returns { "status": "ok" }
 
 ---
 
-### Step 1.2: Core Prediction Endpoint
+### Step 1.2: Core Prediction Endpoint (Completed [x])
 
-6. Create ackend/schemas/request.py â€” define Pydantic models for input/output matching SCMS dataset schema
-7. Create ackend/services/model_service.py â€” load model_delay.json, model_risk.json, label_encoders.pkl on startup
-8. Create ackend/routers/predict.py â€” implement POST /predict:
+6. [x] Create  ackend/schemas/request.py — define Pydantic models for input/output matching SCMS dataset schema
+7. [x] Create  ackend/services/model_service.py — load model_delay.json, model_risk.json, label_encoders.pkl on startup
+8. [x] Create  ackend/routers/predict.py — implement POST /predict:
    - Accept SCMS supply chain input fields (Country, Shipment Mode, Vendor INCO Term, Weight, Freight Cost, Line Item Value, Quantity, etc.)
-   - Run XGBoost inference â†’ delay_days (regression) + isk ON TIME / DELAYED (classification)
+   - Run XGBoost inference → delay_days (regression) + isk ON TIME / DELAYED (classification)
    - Return structured JSON:
      `json
      {
@@ -33,15 +33,15 @@
        "action_plan": null
      }
      `
-9. Mount router in main.py, test with curl or Postman
+9. [x] Mount router in main.py, test with curl or Postman
 
 ---
 
-### Step 1.3: SHAP Integration
+### Step 1.3: SHAP Integration (Completed [x])
 
-10. Create ackend/services/shap_service.py â€” load explainer.pkl on startup
-11. For each /predict call, run SHAP and extract top 3â€“5 feature contributions as percentages
-12. Add shap_breakdown to the predict response:
+10. [x] Create  ackend/services/shap_service.py — load explainer.pkl on startup
+11. [x] For each /predict call, run SHAP and extract top 3–5 feature contributions as percentages
+12. [x] Add shap_breakdown to the predict response:
     `json
     "shap_breakdown": {
       "Line Item Value": 29.5,
@@ -49,14 +49,14 @@
       "Vendor INCO Term": 16.9
     }
     `
-13. Verify SHAP values sum to approximately 100%
+13. [x] Verify SHAP values sum to approximately 100%
 
 ---
 
-### Step 1.4: Gemini AI Integration
+### Step 1.4: Gemini AI Integration (Completed [x])
 
-14. Create ackend/services/gemini_service.py â€” initialize google-generativeai client
-15. Build prompt template specific to customs clearance context:
+14. [x] Create  ackend/services/gemini_service.py — initialize google-generativeai client
+15. [x] Build prompt template specific to customs clearance context:
     `
     You are a customs clearance risk advisor for cross-border trade.
     Given this shipment analysis:
@@ -68,22 +68,22 @@
     Focus on: customs documentation, timeline buffer, and cargo preparation steps.
     Be specific and practical. Do not restate the numbers.
     `
-16. Use gemini-1.5-flash model (fast, free-tier friendly)
-17. Inject Gemini response as ction_plan string into /predict response
-18. Test full /predict end-to-end: input â†’ XGBoost â†’ SHAP â†’ Gemini â†’ JSON output
+16. [x] Use gemini-1.5-flash model (fast, free-tier friendly)
+17. [x] Inject Gemini response as  ction_plan string into /predict response
+18. [x] Test full /predict end-to-end: input → XGBoost → SHAP → Gemini → JSON output
 
 ---
 
-### Step 1.5: Backend Phase 1 Verification
+### Step 1.5: Backend Phase 1 Verification (Completed [x])
 
-19. Test /predict with valid inputs â€” confirm all 4 fields populated (delay, risk, SHAP, action plan)
-20. Test /predict with edge cases: missing fields, unknown routes, invalid dates
-21. Measure response time â€” target under 3 seconds including Gemini call
-22. Fix any errors before moving to bulk
+19. [x] Test /predict with valid inputs — confirm all 4 fields populated (delay, risk, SHAP, action plan)
+20. [x] Test /predict with edge cases: missing fields, unknown routes, invalid dates
+21. [x] Measure response time — target under 3 seconds including Gemini call
+22. [x] Fix any errors before moving to bulk
 
 ---
 
-## Phase 2 â€” Bulk Upload & Feedback
+## Phase 2 — Bulk Upload & Feedback
 
 ### Step 2.1: Bulk Prediction Endpoint
 

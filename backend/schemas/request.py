@@ -1,4 +1,4 @@
-﻿# Pydantic request/response schemas
+# Pydantic request/response schemas
 from pydantic import BaseModel, Field
 from typing import Literal
 
@@ -29,6 +29,9 @@ class PredictionRequest(BaseModel):
     value_per_unit: float = Field(..., ge=0, description="Line item value divided by quantity (line_item_value / line_item_quantity)")
     sched_month: int = Field(..., ge=1, le=12, description="Scheduled delivery month (1-12)")
     sched_dayofweek: int = Field(..., ge=0, le=6, description="Scheduled delivery day of week (0=Mon, 6=Sun)")
+
+    # --- AI Model Config ---
+    model_name: str | None = Field(default="gemini-3.6-flash", description="Optional Gemini model ID (e.g., gemini-3.5-flash, gemini-3.6-flash)")
 
     # Pydantic v2: replaces deprecated `class Config`
     model_config = {

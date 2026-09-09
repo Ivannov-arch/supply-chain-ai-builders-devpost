@@ -1,4 +1,7 @@
-﻿from fastapi import FastAPI, HTTPException
+from dotenv import load_dotenv
+load_dotenv()  # Must be first — loads .env before any service imports read os.environ
+
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.schemas.request import PredictionRequest, PredictionResponse
@@ -37,8 +40,8 @@ def predict(data: PredictionRequest):
         # Steps 1-3: ML inference
         result = run_prediction(data)
 
-        # Step 4: Gemini action plan
-        result["action_plan"] = generate_action_plan(result)
+        # Step 4: Gemini action plan (with optional model selection)
+        result["action_plan"] = generate_action_plan(result, model_name=getattr(data, "model_name", None))
 
         return result
 

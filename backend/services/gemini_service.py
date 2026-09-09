@@ -1,15 +1,20 @@
-﻿# backend/services/gemini_service.py
-# Copy this file to: backend/services/gemini_service.py
+# backend/services/gemini_service.py
 
 import os
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+from pathlib import Path
+from dotenv import load_dotenv
 
-# ── Client (initialized once) ─────────────────────────────────────────────────
-# Set GEMINI_API_KEY in your .env file
-_client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+# Try loading .env from backend/.env or root .env
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
+load_dotenv()  # Fallback to current working directory
 
-MODEL_ID = "gemini-1.5-flash"
+api_key = os.environ.get("GEMINI_API_KEY", "")
+if api_key:
+    genai.configure(api_key=api_key)
+
+DEFAULT_MODEL_ID = "gemini-3.6-flash"
 
 
 # ── Prompt builder ────────────────────────────────────────────────────────────
@@ -41,30 +46,36 @@ Do not repeat the input data back."""
 
 
 # ── Main function ─────────────────────────────────────────────────────────────
-def generate_action_plan(prediction: dict) -> str:
+def generate_action_plan(prediction: dict, model_name: str | None = None) -> str:
     """
     Call Gemini to generate an action plan based on prediction results.
 
     Args:
         prediction: dict returned by run_prediction() — must contain
                     delay_days, risk_label, shap_top_features
+        model_name: Optional Gemini model ID (defaults to DEFAULT_MODEL_ID)
 
     Returns:
         str: Gemini-generated action plan (plain text, numbered list)
     """
+    if not os.environ.get("GEMINI_API_KEY"):
+        return "Gemini API key is not configured. Please set GEMINI_API_KEY in .env."
+
+    target_model = model_name or DEFAULT_MODEL_ID
+
     prompt = _build_prompt(
         delay_days=prediction["delay_days"],
         risk_label=prediction["risk_label"],
         shap_top_features=prediction["shap_top_features"],
     )
 
-    response = _client.models.generate_content(
-        model=MODEL_ID,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0.3,          # Low temp → consistent, factual output
+    model = genai.GenerativeModel(
+        model_name=target_model,
+        generation_config=genai.GenerationConfig(
+            temperature=0.3,
             max_output_tokens=512,
         ),
     )
 
+    response = model.generate_content(prompt)
     return response.text.strip()
