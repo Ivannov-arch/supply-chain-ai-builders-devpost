@@ -1,0 +1,45 @@
+{
+  "feature_cols": [
+    "Country",
+    "Managed By",
+    "Fulfill Via",
+    "Vendor INCO Term",
+    "Shipment Mode",
+    "Product Group",
+    "Sub Classification",
+    "Vendor",
+    "Weight (Kilograms)",
+    "Freight Cost (USD)",
+    "Line Item Value",
+    "Line Item Quantity",
+    "Pack Price",
+    "planned_lead_time",
+    "freight_per_kg",
+    "value_per_unit",
+    "sched_month",
+    "sched_dayofweek"
+  ],
+  "categorical_cols": [
+    "Country",
+    "Managed By",
+    "Fulfill Via",
+    "Vendor INCO Term",
+    "Shipment Mode",
+    "Product Group",
+    "Sub Classification",
+    "Vendor"
+  ],
+  "numerical_cols": [
+    "Weight (Kilograms)",
+    "Freight Cost (USD)",
+    "Line Item Value",
+    "Line Item Quantity",
+    "Pack Price",
+    "planned_lead_time",
+    "freight_per_kg",
+    "value_per_unit",
+    "sched_month",
+    "sched_dayofweek"
+  ],
+  "optimal_threshold": 0.5099999999999998
+}

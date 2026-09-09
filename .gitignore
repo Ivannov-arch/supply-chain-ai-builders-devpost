@@ -1,11 +1,11 @@
-﻿# Python
+# Python
 venv/
 __pycache__/
 *.pyc
 .env
-backend/.env
-backend/models/*.json
-backend/models/*.pkl
+# backend/models (tracked for deployment)
+!backend/models/*.json
+!backend/models/*.pkl
 
 # Node
 frontend/node_modules/
