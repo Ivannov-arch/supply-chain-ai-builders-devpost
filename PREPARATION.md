@@ -167,11 +167,13 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 ## 7. Supabase Schema
 
-Run this SQL in Supabase SQL Editor before hackathon:
+Schema: `devpost_name_ai_builders` (already created & verified in Supabase)
 
 ```sql
+CREATE SCHEMA IF NOT EXISTS devpost_name_ai_builders;
+
 -- Feedback table for user validation loop
-CREATE TABLE feedback (
+CREATE TABLE devpost_name_ai_builders.feedback (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   origin TEXT,
   destination TEXT,
@@ -183,7 +185,7 @@ CREATE TABLE feedback (
 );
 
 -- Optional: prediction logs
-CREATE TABLE prediction_logs (
+CREATE TABLE devpost_name_ai_builders.prediction_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   input_data JSONB,
   output_data JSONB,
@@ -191,7 +193,7 @@ CREATE TABLE prediction_logs (
 );
 ```
 
-- [ ] Tables created and confirmed in Supabase dashboard
+- [x] Tables created and confirmed in Supabase dashboard under schema `devpost_name_ai_builders`
 
 ---
 
