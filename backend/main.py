@@ -8,6 +8,8 @@ from backend.schemas.request import PredictionRequest, PredictionResponse
 from backend.services.predictor import run_prediction
 from backend.services.gemini_service import generate_action_plan
 
+from backend.routers import predict as predict_router, feedback
+
 app = FastAPI(
     title="Supply Chain Risk API",
     description="Customs delay prediction using XGBoost + SHAP + Gemini",
@@ -25,6 +27,9 @@ app.add_middleware(
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+app.include_router(predict_router.router)
+app.include_router(feedback.router)
 
 
 @app.post("/predict", response_model=PredictionResponse)
