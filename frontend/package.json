@@ -6,26 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-<<<<<<< HEAD
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
-    "@types/papaparse": "^5.5.2",
-    "lucide-react": "^1.43.0",
-    "next": "^16.3.4",
-    "papaparse": "^5.7.0",
-    "postcss": "^8.5.28",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "recharts": "^3.10.1",
-    "tailwindcss": "^4.3.3"
-  },
-  "devDependencies": {
-    "@types/node": "22.20.2",
-    "@types/react": "19.3.0",
-    "typescript": "7.0.2"
-=======
     "lint": "eslint"
   },
   "dependencies": {
@@ -46,6 +26,5 @@
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
     "typescript": "^5"
->>>>>>> 3dd6ceb (feat: Phase 3 frontend + Supabase integration)
   }
 }
