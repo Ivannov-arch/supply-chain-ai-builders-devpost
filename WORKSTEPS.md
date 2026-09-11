@@ -1,8 +1,8 @@
-# Implementation Worksteps — Cross-Border Supply Chain Risk Predictor
+# Implementation Worksteps ï¿½ Cross-Border Supply Chain Risk Predictor
 
 ---
 
-## Phase 1 — Dataset & Backend Setup
+## Phase 1 ï¿½ Dataset & Backend Setup
 
 ### Step 1.1: Environment & Project Setup (Completed [x])
 
@@ -16,11 +16,12 @@
 
 ### Step 1.2: Core Prediction Endpoint (Completed [x])
 
-6. [x] Create ackend/schemas/request.py — define Pydantic models for input/output matching SCMS dataset schema (PredictionRequest, PredictionResponse)
-7. [x] Create ackend/services/model_service.py — load model_delay.json, model_risk.json, label_encoders.pkl on startup
-8. [x] Create ackend/routers/predict.py — implement POST /predict:
+6. [x] Create ackend/schemas/request.py ï¿½ define Pydantic models for input/output matching SCMS dataset schema (PredictionRequest, PredictionResponse)
+7. [x] Create ackend/services/model_service.py ï¿½ load model_delay.json, model_risk.json, label_encoders.pkl on startup
+8. [x] Create ackend/routers/predict.py ï¿½ implement POST /predict:
    - Accept SCMS supply chain input fields (Country, Shipment Mode, Vendor INCO Term, Weight, Freight Cost, Line Item Value, Quantity, etc.)
-   - Run XGBoost inference ? delay_days (regression) + isk_label (classification)
+   - Run XGBoost inference ? delay_days (regression) + 
+isk_label (classification)
    - Return structured JSON response
 9. [x] Mount router in main.py, test with FastAPI swagger docs
 
@@ -28,7 +29,7 @@
 
 ### Step 1.3: SHAP Integration (Completed [x])
 
-10. [x] Create ackend/services/shap_service.py — load explainer.pkl on startup
+10. [x] Create ackend/services/shap_service.py ï¿½ load explainer.pkl on startup
 11. [x] For each /predict call, run SHAP and extract top feature contributions as percentages
 12. [x] Add shap_top_features to the predict response
 13. [x] Verify SHAP values and output structure
@@ -37,7 +38,7 @@
 
 ### Step 1.4: Gemini AI Integration (Completed [x])
 
-14. [x] Create ackend/services/gemini_service.py — initialize Google GenAI / Gemini client
+14. [x] Create ackend/services/gemini_service.py ï¿½ initialize Google GenAI / Gemini client
 15. [x] Build prompt template specific to supply chain risk & customs clearance context
 16. [x] Use Gemini model for fast, actionable advice generation
 17. [x] Inject Gemini response as ction_plan string into /predict response
@@ -47,14 +48,16 @@
 
 ### Step 1.5: Backend Phase 1 Verification & Supabase Integration (Completed [x])
 
-19. [x] Test /predict with valid inputs — confirm all fields populated (delay_days, isk_flag, isk_label, shap_top_features, ction_plan)
+19. [x] Test /predict with valid inputs ï¿½ confirm all fields populated (delay_days, 
+isk_flag, 
+isk_label, shap_top_features, ction_plan)
 20. [x] Create & execute Supabase SQL Schema for prediction_logs and eedback tables (column names aligned 1:1 with backend models)
 21. [x] Save prediction log automatically into Supabase prediction_logs on each /predict call
 22. [x] Implement POST /feedback endpoint in backend to log user actual outcome into Supabase
 
 ---
 
-## Phase 2 — Bulk Upload & Endpoints (Completed [x])
+## Phase 2 ï¿½ Bulk Upload & Endpoints (Completed [x])
 
 23. [x] Implement POST /predict-bulk in ackend/routers/predict.py:
     - Accept CSV file upload
@@ -64,19 +67,19 @@
 
 ---
 
-## Phase 3 — Frontend Application & Deployment
+## Phase 3 ï¿½ Frontend Application & Deployment
 
 ### Step 3.1: Frontend Application Build
 
-24. [ ] Build Next.js 15 app in rontend/ with Tailwind CSS & UI components
-25. [ ] Create rontend/lib/api.ts — API client wrappers for /predict, /predict-bulk, /feedback
-26. [ ] Build **Single Shipment Predictor Page**:
+24. [x] Build Next.js 15 app in rontend/ with Tailwind CSS & UI components
+25. [x] Create rontend/lib/api.ts ï¿½ API client wrappers for /predict, /predict-bulk, /feedback
+26. [x] Build **Single Shipment Predictor Page**:
     - Form inputs matching backend PredictionRequest
     - Interactive results card: Risk badge, predicted delay days, confidence/risk flag
     - SHAP Feature Importance visual chart
     - Gemini Action Plan display
     - Live Feedback submit button (Was this shipment delayed? Yes / No)
-27. [ ] Build **Bulk CSV Upload Page**:
+27. [x] Build **Bulk CSV Upload Page**:
     - Drag-and-drop CSV upload zone
     - Summary risk cards & risk heatmap table
     - Export results functionality
@@ -85,7 +88,7 @@
 
 ### Step 3.2: Verification & Final Polish
 
-28. [ ] End-to-end testing of Frontend ? Backend integration
+28. [x] End-to-end testing of Frontend ? Backend integration
 29. [ ] Prepare demo data (sample_manifest.csv) for submission/pitch
 
 ---
@@ -95,6 +98,8 @@
 | Endpoint | Method | Purpose | Output |
 |----------|--------|---------|--------|
 | /health | GET | Healthcheck | { status: "ok" } |
-| /predict | POST | Single shipment prediction + SHAP + Gemini + Supabase log | delay_days, isk_flag, isk_label, shap_top_features, ction_plan |
+| /predict | POST | Single shipment prediction + SHAP + Gemini + Supabase log | delay_days, 
+isk_flag, 
+isk_label, shap_top_features, ction_plan |
 | /predict-bulk | POST | CSV bulk prediction | array of predictions + summary counts |
 | /feedback | POST | Submit ground truth outcome | { status: "success", log_id: ... } |
