@@ -71,3 +71,5 @@ class PredictionResponse(BaseModel):
         description="Top SHAP feature contributions driving the prediction",
     )
     action_plan: str = Field(..., description="AI-generated action plan from Gemini")
+    prediction_id: str | None = Field(default=None, description="Supabase prediction_logs row ID (for feedback linking)")
+
