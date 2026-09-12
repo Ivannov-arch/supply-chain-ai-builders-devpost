@@ -144,3 +144,80 @@ export async function healthCheck(): Promise<{ status: string }> {
   const res = await fetch(`${API_URL}/health`);
   return handleResponse<{ status: string }>(res);
 }
+
+// ── Dev Benchmark Types & API ───────────────────────────────────
+
+export interface GroundTruthData {
+  scheduled_date: string;
+  delivered_date: string;
+  actual_delay_days: number;
+  actual_risk_flag: number;
+  actual_risk_label: string;
+}
+
+export interface DevRecordListItem {
+  row_id: number;
+  country: string;
+  shipment_mode: string;
+  vendor: string;
+  scheduled_date: string;
+  delivered_date: string;
+  actual_delay_days: number;
+  actual_risk_flag: number;
+  actual_risk_label: string;
+  weight_kg: number;
+  freight_cost_usd: number;
+}
+
+export interface DevRecordsResponse {
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+  items: DevRecordListItem[];
+}
+
+export interface DevRecordDetail {
+  row_id: number;
+  features: PredictionRequest;
+  ground_truth: GroundTruthData;
+}
+
+export interface DevSummary {
+  total_records: number;
+  delayed_count: number;
+  ontime_count: number;
+  avg_delay_days: number;
+  max_delay_days: number;
+}
+
+/** Fetch paginated benchmark records */
+export async function fetchDevRecords(
+  page: number = 1,
+  limit: number = 20,
+  filter: "all" | "delayed" | "ontime" = "all",
+  search?: string
+): Promise<DevRecordsResponse> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    filter,
+  });
+  if (search && search.trim()) {
+    params.append("search", search.trim());
+  }
+  const res = await fetch(`${API_URL}/api/dev/records?${params.toString()}`);
+  return handleResponse<DevRecordsResponse>(res);
+}
+
+/** Fetch a single benchmark record by row_id */
+export async function fetchDevRecordById(rowId: number): Promise<DevRecordDetail> {
+  const res = await fetch(`${API_URL}/api/dev/records/${rowId}`);
+  return handleResponse<DevRecordDetail>(res);
+}
+
+/** Fetch benchmark statistics */
+export async function fetchDevSummary(): Promise<DevSummary> {
+  const res = await fetch(`${API_URL}/api/dev/summary`);
+  return handleResponse<DevSummary>(res);
+}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { DevModeProvider } from "@/context/DevModeContext";
+import DevAuthModal from "@/components/DevAuthModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,8 +35,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className={inter.className}>
-        <Navbar />
-        <main style={{ position: "relative", zIndex: 1 }}>{children}</main>
+        <DevModeProvider>
+          <Navbar />
+          <DevAuthModal />
+          <main style={{ position: "relative", zIndex: 1 }}>{children}</main>
+        </DevModeProvider>
       </body>
     </html>
   );

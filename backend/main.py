@@ -11,7 +11,7 @@ from backend.schemas.request import PredictionRequest, PredictionResponse
 from backend.services.predictor import run_prediction
 from backend.services.gemini_service import generate_action_plan
 
-from backend.routers import predict as predict_router, feedback
+from backend.routers import predict as predict_router, feedback, dev as dev_router
 
 app = FastAPI(
     title="Supply Chain Risk API",
@@ -96,6 +96,7 @@ def health():
 
 app.include_router(predict_router.router)
 app.include_router(feedback.router)
+app.include_router(dev_router.router, prefix="/api/dev", tags=["Developer"])
 
 
 @app.post("/predict", response_model=PredictionResponse)

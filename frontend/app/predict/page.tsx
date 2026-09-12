@@ -13,11 +13,14 @@ import {
   Calendar,
   Settings2,
 } from "lucide-react";
-import { predict, type PredictionRequest, type PredictionResponse } from "@/lib/api";
+import { predict, type PredictionRequest, type PredictionResponse, type DevRecordDetail, type GroundTruthData } from "@/lib/api";
 import RiskCard from "@/components/RiskCard";
 import ShapBreakdown from "@/components/ShapBreakdown";
 import ActionPlan from "@/components/ActionPlan";
 import FeedbackButton from "@/components/FeedbackButton";
+import { useDevMode } from "@/context/DevModeContext";
+import DevDatasetNavigator from "@/components/DevDatasetNavigator";
+import DevValidationCard from "@/components/DevValidationCard";
 
 // ── Dropdown options (aligned with SCMS dataset values) ─────────
 const COUNTRIES = [
@@ -138,9 +141,14 @@ function FormSection({
 // ═══════════════════════════════════════════════════════════════
 
 export default function PredictPage() {
+  const { isDevMode } = useDevMode();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Dev mode ground truth state
+  const [currentDevRecord, setCurrentDevRecord] = useState<DevRecordDetail | null>(null);
+  const [groundTruth, setGroundTruth] = useState<GroundTruthData | null>(null);
 
   // Form state
   const [form, setForm] = useState({
@@ -185,26 +193,11 @@ export default function PredictPage() {
     }));
   };
 
-  const handleSubmit = async () => {
+  const executePrediction = async (payload: PredictionRequest) => {
     setLoading(true);
     setError(null);
-    setResult(null);
 
     try {
-      const payload: PredictionRequest = {
-        ...form,
-        weight_kg: Number(form.weight_kg),
-        freight_cost_usd: Number(form.freight_cost_usd),
-        line_item_value: Number(form.line_item_value),
-        line_item_quantity: Number(form.line_item_quantity),
-        pack_price: Number(form.pack_price),
-        planned_lead_time: Number(form.planned_lead_time),
-        freight_per_kg: Number(form.freight_per_kg),
-        value_per_unit: Number(form.value_per_unit),
-        sched_month: Number(form.sched_month),
-        sched_dayofweek: Number(form.sched_dayofweek),
-      };
-
       const data = await predict(payload);
       setResult(data);
     } catch (err) {
@@ -212,6 +205,50 @@ export default function PredictPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSelectDevRecord = (record: DevRecordDetail) => {
+    setCurrentDevRecord(record);
+    setGroundTruth(record.ground_truth);
+    setForm({
+      country: record.features.country,
+      managed_by: record.features.managed_by,
+      fulfill_via: record.features.fulfill_via,
+      vendor_inco_term: record.features.vendor_inco_term,
+      shipment_mode: record.features.shipment_mode,
+      product_group: record.features.product_group,
+      sub_classification: record.features.sub_classification,
+      vendor: record.features.vendor,
+      weight_kg: record.features.weight_kg,
+      freight_cost_usd: record.features.freight_cost_usd,
+      line_item_value: record.features.line_item_value,
+      line_item_quantity: record.features.line_item_quantity,
+      pack_price: record.features.pack_price,
+      planned_lead_time: record.features.planned_lead_time,
+      freight_per_kg: record.features.freight_per_kg,
+      value_per_unit: record.features.value_per_unit,
+      sched_month: record.features.sched_month,
+      sched_dayofweek: record.features.sched_dayofweek,
+    });
+    // Run prediction on selected benchmark row
+    executePrediction(record.features);
+  };
+
+  const handleSubmit = () => {
+    const payload: PredictionRequest = {
+      ...form,
+      weight_kg: Number(form.weight_kg),
+      freight_cost_usd: Number(form.freight_cost_usd),
+      line_item_value: Number(form.line_item_value),
+      line_item_quantity: Number(form.line_item_quantity),
+      pack_price: Number(form.pack_price),
+      planned_lead_time: Number(form.planned_lead_time),
+      freight_per_kg: Number(form.freight_per_kg),
+      value_per_unit: Number(form.value_per_unit),
+      sched_month: Number(form.sched_month),
+      sched_dayofweek: Number(form.sched_dayofweek),
+    };
+    executePrediction(payload);
   };
 
   return (
@@ -274,6 +311,13 @@ export default function PredictPage() {
         >
           {/* ── Left: Form ─────────────────────────────────────── */}
           <div className="animate-in animate-delay-1">
+            {isDevMode && (
+              <DevDatasetNavigator
+                currentRecord={currentDevRecord}
+                onSelectRecord={handleSelectDevRecord}
+              />
+            )}
+
             <div
               className="glass-card"
               style={{ padding: "1.5rem", overflow: "hidden" }}
@@ -666,6 +710,13 @@ export default function PredictPage() {
                 animation: "slide-in-right 0.5s ease-out",
               }}
             >
+              {isDevMode && groundTruth && (
+                <DevValidationCard
+                  prediction={result}
+                  groundTruth={groundTruth}
+                />
+              )}
+
               <RiskCard
                 riskLabel={result.risk_label}
                 riskFlag={result.risk_flag}
