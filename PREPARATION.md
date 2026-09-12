@@ -1,5 +1,5 @@
 # PREPARATION.md
-> Pre-hackathon setup checklist. Complete everything here **before** the clock starts.
+>Setup checklist. Complete everything here **before** the clock starts.
 
 ---
 
