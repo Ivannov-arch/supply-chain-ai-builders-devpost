@@ -3,7 +3,10 @@
 //  Typed wrappers aligned 1:1 with backend Pydantic schemas
 // ═══════════════════════════════════════════════════════════════
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = (
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://devpost-ai-builders-supply-chain.onrender.com"
+).replace(/\/$/, "");
 
 // ── Request Types ───────────────────────────────────────────────
 

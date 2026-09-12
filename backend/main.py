@@ -90,7 +90,19 @@ async def _log_prediction(input_data: PredictionRequest, result: dict):
     return None
 
 
-@app.get("/health")
+@app.get("/", tags=["Health"])
+@app.head("/", tags=["Health"])
+def root():
+    return {
+        "status": "healthy",
+        "service": "SupplyPulse AI API",
+        "version": "1.0.0",
+        "uptime": "active",
+    }
+
+
+@app.get("/health", tags=["Health"])
+@app.head("/health", tags=["Health"])
 def health():
     return {"status": "ok"}
 
