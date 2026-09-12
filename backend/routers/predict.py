@@ -1,4 +1,4 @@
-﻿# POST /predict — single shipment prediction
+# POST /predict — single shipment prediction
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import pandas as pd
 import io
@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post("/predict-bulk")
 async def predict_bulk(file: UploadFile = File(...)):
     if not file.filename.endswith(('.csv', '.xlsx')):
-        raise HTTPException(status_code=400, detail="Hanya format .csv atau .xlsx yang didukung")
+        raise HTTPException(status_code=400, detail="Only .csv or .xlsx file formats are supported")
     
     contents = await file.read()
     try:
@@ -19,7 +19,7 @@ async def predict_bulk(file: UploadFile = File(...)):
         else:
             df = pd.read_excel(io.BytesIO(contents))
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Gagal membaca file: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to read file: {str(e)}")
 
     required_cols = [
         'country', 'managed_by', 'fulfill_via', 'vendor_inco_term', 
@@ -31,9 +31,9 @@ async def predict_bulk(file: UploadFile = File(...)):
     
     missing_cols = [col for col in required_cols if col not in df.columns]
     if missing_cols:
-        raise HTTPException(status_code=400, detail=f"Kolom file kurang: {missing_cols}")
+        raise HTTPException(status_code=400, detail=f"Missing required columns: {missing_cols}")
 
-    # Batasi maksimal 200 baris per upload
+    # Limit to maximum 200 rows per upload
     df = df.head(200)
     results = []
     high_count = 0
@@ -44,7 +44,7 @@ async def predict_bulk(file: UploadFile = File(...)):
             row_dict = row.to_dict()
             req_data = PredictionRequest(**row_dict)
             
-            # Jalankan model XGBoost asli dari Phase 1
+            # Run XGBoost model from Phase 1
             pred_res = run_prediction(req_data)
             
             risk_label = pred_res.get("risk_label", "Low Risk")
