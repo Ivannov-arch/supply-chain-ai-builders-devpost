@@ -93,13 +93,51 @@ isk_label, shap_top_features, ction_plan)
 
 ---
 
+## Phase 4 — Developer Mode & Ground Truth Benchmark Inspector (Completed [x])
+
+### Step 4.1: Passcode & Easter Egg Authentication (Completed [x])
+
+30. [x] Set default passcode `devpost2026` (configurable via `NEXT_PUBLIC_DEV_PASSCODE`)
+31. [x] Implement Easter Egg Trigger:
+    - Click "SupplyPulse" logo in Navbar 5 times within 3 seconds, OR
+    - Press keyboard shortcut `Ctrl + Shift + D` (or `Cmd + Shift + D` on Mac)
+32. [x] Create `DevModeContext.tsx` & `DevAuthModal.tsx` for state management & authentication prompt
+33. [x] Add floating indicator badge `[ 🛠️ DEV BENCHMARK MODE ]` with exit button in Navbar when active
+
+---
+
+### Step 4.2: Backend Benchmark Dataset & Endpoints (Completed [x])
+
+34. [x] Create pre-processed benchmark dataset `backend/data/scms_benchmark.csv` (2,908 valid rows with features and ground truth)
+35. [x] Implement `backend/routers/dev.py` router:
+    - `GET /api/dev/records`: Paginated list of benchmark records (`filter`, `search`, `page`, `limit`)
+    - `GET /api/dev/records/{row_id}`: Fetch single complete record with features and ground truth
+    - `GET /api/dev/summary`: Benchmark summary stats (total rows, delayed count, on-time count, avg delay)
+36. [x] Mount dev router in `backend/main.py` under `/api/dev`
+
+---
+
+### Step 4.3: Frontend Navigator, Inspector & Side-by-Side Validation (Completed [x])
+
+37. [x] Update `frontend/lib/api.ts` with TypeScript interfaces and dev API client functions
+38. [x] Create `DevDatasetNavigator.tsx` toolbar for `/predict`:
+    - Prev / Next row controls, random row selector, filter toggle (`All`, `Delayed`, `On-Time`), and full table launcher
+39. [x] Create `DevTableModal.tsx` for browsing, searching, and filtering all 2,908 benchmark records
+40. [x] Create `DevValidationCard.tsx` for side-by-side comparison:
+    - Metric comparison table (Delay Days, Risk Classification, Timeline) with signed error delta `Δ`
+    - Confusion Matrix Evaluation (`True Positive`, `True Negative`, `False Positive`, `False Negative`)
+41. [x] Integrate Dev Mode components into `frontend/app/predict/page.tsx`
+
+---
+
 ## Quick Reference
 
 | Endpoint | Method | Purpose | Output |
 |----------|--------|---------|--------|
 | /health | GET | Healthcheck | { status: "ok" } |
-| /predict | POST | Single shipment prediction + SHAP + Gemini + Supabase log | delay_days, 
-isk_flag, 
-isk_label, shap_top_features, ction_plan |
+| /predict | POST | Single shipment prediction + SHAP + Gemini + Supabase log | delay_days, risk_flag, risk_label, shap_top_features, action_plan |
 | /predict-bulk | POST | CSV bulk prediction | array of predictions + summary counts |
 | /feedback | POST | Submit ground truth outcome | { status: "success", log_id: ... } |
+| /api/dev/records | GET | Fetch paginated benchmark records | array of benchmark records + pagination metadata |
+| /api/dev/records/{row_id} | GET | Fetch single record with ground truth | record features + ground truth data |
+| /api/dev/summary | GET | Fetch benchmark dataset statistics | total, delayed count, ontime count, avg delay |

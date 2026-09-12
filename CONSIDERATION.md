@@ -1,40 +1,23 @@
-Dokumen initial reserach.txt secara struktur bisnis dan alur dasar sudah **sangat solid (sekitar 80–85% matang)** untuk ukuran proyek *hackathon*. Namun, jika dibawa ke persaingan *hackathon AI* saat ini, ada **5 celah krusial** yang masih kurang dan bisa membuat proyek ini kalah bersaing dengan kompetitor lain.
+# Strategic Considerations & Competitive Edge
+
+This document outlines key technical and product differentiators designed to maximize hackathon evaluation scores for **SupplyPulse**.
 
 ---
 
-### Yang Masih Kurang & Perlu Ditambahkan
+## 1. Differentiators & Agentic Architecture
 
-**1. Sentuhan "GenAI / AI Agent" (Terlalu Berorientasi pada ML Klasik)**
+### 1. Hybrid Machine Learning + LLM Agent Architecture
+- **Concept:** Pure ML (XGBoost/Prophet) alone feels traditional, while pure LLM lacks quantitative precision.
+- **Solution:** Combine XGBoost as the quantitative inference engine with Gemini LLM as the reasoning layer to generate actionable, context-aware mitigation plans based on risk scores and SHAP feature importance.
 
-* **Celah:** Penggunaan XGBoost atau Prophet murni adalah pendekatan *Machine Learning* klasik era 2018. Jika ini dikompetisikan di *AI Hackathon*, juri akan mencari penggunaan LLM, *Agentic Workflow*, atau *Reasoning*.
-* **Solusi:** Jadikan XGBoost sebagai *engine* kuantitatif, lalu tambahkan **LLM Agentic Reasoning** di atasnya. LLM bertugas membaca skor risiko XGBoost + data berita/cuaca terkini, lalu menyusun *action plan* kustom (misal: *"Prediksi delay 4 hari karena badai Y. Eksekusi opsi B: alihkan kargo via jalur darat Z"*).
+### 2. Explainable AI (XAI) Transparency
+- **Concept:** Supply chain managers reject "black box" risk scores without rationale.
+- **Solution:** Display SHAP value breakdowns directly in the UI (e.g., *"Risk elevated due to Freight Cost Ratio (+45%) and Origin Country Lead Time (+30%)"*).
 
-**2. Aspek Transparansi & Fitur XAI (Explainable AI)**
+### 3. Real-World UX: Bulk Manifest Scanning
+- **Concept:** Enterprise users handle dozens of active shipments simultaneously rather than manually filling single forms.
+- **Solution:** Provide a drag-and-drop CSV Bulk Predictor that generates risk heatmaps and summary statistics across all shipments at once.
 
-* **Celah:** Sistem hanya memberikan *output* "High Risk" atau "Delay 3 Hari" tanpa menjelaskan **mengapa** angka itu muncul. Pelaku usaha/SME tidak akan mempercayai keputusan logistik bernilai puluhan juta jika alasannya berupa *black box*.
-* **Solusi:** Tampilkan *Feature Importance* atau SHAP *value* sederhana pada UI (misal: *"Risiko Naik karena: Kemacetan Pelabuhan Asal (+45%), Prediksi Cuaca Buruk (+30%)"*).
-
-**3. Real-Time Signal Ingestion (Data Statis vs Data Hidup)**
-
-* **Celah:** Mengandalkan *dataset* historis (seperti Kaggle atau ISOMORPH) saja akan membuat model buta terhadap gangguan mendadak yang terjadi hari ini (misal: pemogokan buruh pelabuhan atau badai minggu ini).
-* **Solusi:** Integrasikan minimal 1 API data hidup yang gratis/ringan, seperti **Open-Meteo API** (untuk data cuaca *real-time*) atau *scraper* berita RSS singkat untuk menangkap sinyal gangguan terkini di rute terkait.
-
-**4. Realistis UX: Bulk Upload (CSV/Excel) vs Form Single-Input**
-
-* **Celah:** Di dunia nyata, eksportir/SME tidak akan memasukkan rute pengiriman satu per satu lewat *form input* jika mereka memiliki 30 *shipment* berjalan.
-* **Solusi:** Ubah *Value Proposition* UX pada MVP: Berikan fitur **"Upload Shipping Manifest (CSV)"**. User mengunggah file Excel daftar pengiriman, lalu *dashboard* langsung menampilkan *heatmap* risiko untuk seluruh *shipment* secara bersamaan.
-
-**5. Loop Feedback / Validasi Pengguna**
-
-* **Celah:** Tidak ada alur yang menjelaskan bagaimana sistem belajar ketika prediksinya salah.
-* **Solusi:** Tambahkan tombol interaksi sederhana pada UI: *"Apakah pengiriman ini benar-benar delay?"* (**Ya/Tidak**). Data balasan pengguna ini disimpan ke database (Supabase) sebagai materi *retraining* model di masa depan.
-
----
-
-### Rekomendasi Revisi Cepat untuk Submission
-
-Tambahkan satu seksi khusus di dokumen Anda dengan judul **"Differentiator & Agentic Architecture"** yang memuat ringkasan ini:
-
-* **Hybrid Architecture:** Menggabungkan XGBoost (Prediksi kuantitatif *delay*) + Gemini/LLM (Penalaran naratif & rekomendasi mitigasi).
-* **Explainable Risk Scoring:** Menjelaskan breakdown persentase penyebab risiko kepada pengguna secara transparan.
-* **Bulk Manifest Scanner:** Memungkinkan SME mengunggah seluruh dokumen manifest logistik (CSV) sekaligus untuk analisis risiko instan.
+### 4. Continuous User Feedback Loop
+- **Concept:** Models need ground-truth feedback to validate accuracy over time.
+- **Solution:** Interactive feedback buttons (*"Was this shipment actually delayed?"*) log user ground truth directly into Supabase PostgreSQL for future model retraining.
